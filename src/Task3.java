@@ -1,10 +1,10 @@
-import org.jacop.constraints.*;
+import org.jacop.constraints.Alldifferent;
 import org.jacop.core.IntVar;
 import org.jacop.core.Store;
 import org.jacop.search.*;
 
-public class Task2 {
-    static Task2 m = new Task2();
+public class Task3 {
+    static Task3 m = new Task3();
 
     public static void main(String[] args) {
 
