@@ -5,6 +5,7 @@ import org.jacop.constraints.*;
 import org.jacop.search.*;
 
 public class Task1 {
+
     static Task1 m = new Task1();
 
     public static void main(String[] args) {
