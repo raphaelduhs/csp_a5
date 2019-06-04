@@ -4,8 +4,8 @@ import org.jacop.core.*;
 import org.jacop.constraints.*;
 import org.jacop.search.*;
 
-public class Main {
-    static Main m = new Main();
+public class Task1 {
+    static Task1 m = new Task1();
 
     public static void main(String[] args) {
 
@@ -44,7 +44,7 @@ public class Main {
         store.impose(new XplusYeqZ(v[2], v[17], v[13])); // i+m4 = a4
 
         //global
-        store.impose(new Alldifferent(v));
+        store.impose(new Alldiff(v));
 
 
         //binary
