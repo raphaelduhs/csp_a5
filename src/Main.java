@@ -38,19 +38,17 @@ public class Main {
 
         do {
 
-            /*System.out.println("Solution: " + v[0] + ", " + v[1] + ", " +
+            System.out.println("Solution: " + v[0] + ", " + v[1] + ", " +
                     v[2] + ", " + v[3]);
 
-             */
 
-            //System.out.println(42);
-            System.out.println(allsolution.fastSolution());
+
 
             result = search.labeling(store, select);
 
         } while (result);
 
-        /*
+
         if (result)
             System.out.println("Solution: " + v[0] + ", " + v[1] + ", " +
                     v[2] + ", " + v[3]);
@@ -59,6 +57,6 @@ public class Main {
             System.out.println("*** No");
         }
 
-         */
+
     }
 }
