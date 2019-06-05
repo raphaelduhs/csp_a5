@@ -3,24 +3,29 @@ import org.jacop.core.IntVar;
 import org.jacop.core.Store;
 import org.jacop.search.*;
 
+import java.util.ArrayList;
+
 public class Task3 {
 
     public static void main(String[] args) {
 
         Store store = new Store(); // define FD store
-        int size = 4;
+        int size = 4;   // set size for the chessboard and the number of queens
         int fields = size*size;
 
-        // define finite domain variables
+        // define finite domain variables ///////////////////////////////
         IntVar[] v = new IntVar[fields];
         for (int i = 0; i < fields; i++)
             v[i] = new IntVar(store, "v" + i, 0, 1);
 
-        //constraints
+        //constraints //////////////////////////////////////////////////
 
         //row
-        for (int i = 0; i < fields; i = i + 4) {
-            IntVar[] vtmp = {v[i], v[i + 1], v[i + 2], v[i + 3]};
+        for (int i = 0; i < fields; i = i + size) {
+            IntVar[] vtmp = new IntVar[size];//{v[i], v[i + 1], v[i + 2], v[i + 3]};
+            for(int j = 0; j < size; j++){
+                vtmp[j] = v[i+j];
+            }
             IntVar sum = new IntVar(store, "sum",0,1);
             store.impose(new Sum(vtmp,sum));
         }
@@ -28,64 +33,67 @@ public class Task3 {
 
         //column
         for (int i = 0; i < size; i++) {
-            IntVar[] vtmp = {v[i],v[i+4],v[i+8],v[i+12],};
+            IntVar[] vtmp = new IntVar[size];//{v[i],v[i+4],v[i+8],v[i+12],};
+            int index = 0;
+            for(int j = 0; j < fields; j += size){
+                vtmp[index] = v[i+j];
+                index++;
+            }
             IntVar sum = new IntVar(store, "sum",0,1);
             store.impose(new Sum(vtmp,sum));
         }
 
+        // diagonal: top left -> bottom right
+        for( int k = 0 ; k < size * 2 ; k++ ) {
+            ArrayList<IntVar> list = new ArrayList<>();
+            for( int j = 0 ; j <= k ; j++ ) {
+                int i = k - j;
+                if( i < size && j < size ) {
+                    list.add(v[i*size+j]);
+                    //System.out.print( v[i*size+j] + " " );
+                }
+            }
+            IntVar[] vtemp = list.toArray(new IntVar[list.size()]);
+            IntVar sum = new IntVar(store, "sum",0,1);
+            store.impose(new Sum(vtemp,sum));
+            //System.out.println();
+        }
+
+        // diagonal: bottom left -> top right
+        int xStart = size-1;
+        int yStart = 1;
+
+        while(true){
+            int xLoop, yLoop;
+            if(xStart>=0){
+                xLoop = xStart;
+                yLoop = 0;
+                xStart--;
+            }else if(yStart<size){
+                xLoop = 0;
+                yLoop = yStart;
+                yStart++;
+            }else
+                break;
+
+            ArrayList<IntVar> list = new ArrayList<>();
+
+            for(;xLoop<size && yLoop<size; xLoop++, yLoop++){
+                list.add(v[xLoop*size+yLoop]);
+                //System.out.print( v[xLoop*size+yLoop] + " " );
+            }
+            IntVar[] vtemp = list.toArray(new IntVar[list.size()]);
+            IntVar sum = new IntVar(store, "sum",0,1);
+            store.impose(new Sum(vtemp,sum));
+            //System.out.println();
+        }
 
         //max amount of queens
         IntVar sumGlobal = new IntVar(store, "sumGlobal",size,size);
         store.impose(new Sum(v,sumGlobal));
 
-        // diagonal rechts
 
-        IntVar[] vtmpr = {v[1],v[4]};
-        IntVar sum = new IntVar(store, "sum",0,1);
-        store.impose(new Sum(vtmpr,sum));
-
-        IntVar[] vtmpr2 = {v[2],v[5], v[8]};
-        IntVar sum2 = new IntVar(store, "sum",0,1);
-        store.impose(new Sum(vtmpr2,sum2));
-
-        IntVar[] vtmpr3 = {v[3],v[6], v[9], v[12]};
-        IntVar sum3 = new IntVar(store, "sum",0,1);
-        store.impose(new Sum(vtmpr3,sum3));
-
-        IntVar[] vtmpr4 = {v[7],v[10], v[13]};
-        IntVar sum4 = new IntVar(store, "sum",0,1);
-         store.impose(new Sum(vtmpr4,sum4));
-
-        IntVar[] vtmpr5 = {v[11],v[14]};
-        IntVar sum5 = new IntVar(store, "sum",0,1);
-        store.impose(new Sum(vtmpr5,sum5));
-
-        //*****************************
-
-        // diagonal links
-
-        IntVar[] vtmpl = {v[8],v[13]};
-        IntVar sum6 = new IntVar(store, "sum",0,1);
-        store.impose(new Sum(vtmpl,sum6));
-
-        IntVar[] vtmpl2 = {v[4],v[9], v[14]};
-        IntVar sum7 = new IntVar(store, "sum",0,1);
-        store.impose(new Sum(vtmpl2,sum7));
-
-        IntVar[] vtmpl3 = {v[0],v[5], v[10], v[15]};
-        IntVar sum8 = new IntVar(store, "sum",0,1);
-        store.impose(new Sum(vtmpl3,sum8));
-
-        IntVar[] vtmpl4 = {v[1],v[6], v[11]};
-        IntVar sum9 = new IntVar(store, "sum",0,1);
-        store.impose(new Sum(vtmpl4,sum9));
-
-        IntVar[] vtmpl5 = {v[2],v[7]};
-        IntVar sum10 = new IntVar(store, "sum",0,1);
-        store.impose(new Sum(vtmpl5,sum10));
-
-
-        // search for a solution and print results
+        // search for a solution and print results ////////////////////////////////
         Search<IntVar> label = new DepthFirstSearch<IntVar>();
         SelectChoicePoint<IntVar> select =
                 new SimpleSelect<IntVar>(v,
@@ -94,13 +102,13 @@ public class Task3 {
 
         boolean result = label.labeling(store, select);
 
+        // print chess board
         if(result){
             for (int i = 0; i < fields; i++) {
-                if (i % 4 == 0) {
-                    System.out.println("");
-                    System.out.println("------------------");
+                if (i % size == 0) {
+                    System.out.println();
                 }
-                System.out.print(" " + v[i].value() + " | ");
+                System.out.print(v[i].value() + " | ");
             }
         }else {
             System.out.println("*** No");
