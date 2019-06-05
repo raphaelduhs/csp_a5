@@ -8,8 +8,6 @@ public class Task2 {
 
     public static void main(String[] args) {
 
-        Allsolution allsolution = new Allsolution();
-
 
         Store store = new Store(); // define FD store
         int size = 16;
@@ -36,19 +34,19 @@ public class Task2 {
         // quadrant global order constraints
 
         //q1
-        IntVar[] vtmpq1 = {v[0],v[1],v[4],v[5],};
+        IntVar[] vtmpq1 = {v[0],v[1],v[4],v[5]};
         store.impose(new Alldifferent(vtmpq1));
 
         //q2
-        IntVar[] vtmpq2 = {v[2],v[3],v[6],v[7],};
+        IntVar[] vtmpq2 = {v[2],v[3],v[6],v[7]};
         store.impose(new Alldifferent(vtmpq2));
 
         //q3
-        IntVar[] vtmpq3= {v[8],v[9],v[12],v[13],};
+        IntVar[] vtmpq3= {v[8],v[9],v[12],v[13]};
         store.impose(new Alldifferent(vtmpq3));
 
         //q4
-        IntVar[] vtmpq4= {v[10],v[11],v[14],v[15],};
+        IntVar[] vtmpq4= {v[10],v[11],v[14],v[15]};
         store.impose(new Alldifferent(vtmpq4));
 
 
