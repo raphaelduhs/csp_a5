@@ -9,8 +9,10 @@ public class Task3 {
 
     public static void main(String[] args) {
 
+        double starttime = System.currentTimeMillis();
+
         Store store = new Store(); // define FD store
-        int size = 4;   // set size for the chessboard and the number of queens
+        int size = 23;   // set size for the chessboard and the number of queens
         int fields = size*size;
 
         // define finite domain variables ///////////////////////////////
@@ -97,10 +99,12 @@ public class Task3 {
         Search<IntVar> label = new DepthFirstSearch<IntVar>();
         SelectChoicePoint<IntVar> select =
                 new SimpleSelect<IntVar>(v,
-                        new SmallestDomain<IntVar>(),
-                        new IndomainMin<IntVar>());
+                        new SmallestDomain<>(),
+                        new IndomainRandom<>());
 
         boolean result = label.labeling(store, select);
+
+        double endtime = System.currentTimeMillis();
 
         // print chess board
         if(result){
@@ -113,5 +117,11 @@ public class Task3 {
         }else {
             System.out.println("*** No");
         }
+
+        double duration = (endtime-starttime)/1000;
+
+        System.out.println("Zeit: " + duration );
+
+
     }
 }
